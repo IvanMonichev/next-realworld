@@ -1,30 +1,57 @@
-"use client"
-import type { FC } from 'react';
+'use client'
+import type { ChangeEventHandler, FC, FormEventHandler } from 'react'
 import ButtonPrimary from '@/components/ui/button-primary/button-primary'
-import { useAppSelector } from '@/hooks/useAppSelector'
+import { useRegisterMutation } from '@/store/api/user.api'
+import { useState } from 'react'
+import { UserRequestRegisterInterface } from '@/types/user.interface'
+import BackendErrors from '@/components/common/backend-errors/backend-errors'
 
-type RegisterFormProps = {
+const initialFormData: UserRequestRegisterInterface = {
+  user: {
+    email: '',
+    password: '',
+    username: ''
+  }
+}
 
-};
+const RegisterForm: FC = () => {
+  const [formData, setFormData] = useState<UserRequestRegisterInterface>(initialFormData)
+  const [register, { isLoading, error }] = useRegisterMutation()
 
-const RegisterForm: FC<RegisterFormProps> = () => {
- console.log(`RegisterForm component is working`);
-  const state = useAppSelector((state) => state.auth.isLoggedIn)
-  console.log(state)
- return (
-   <form>
-     <fieldset className="form-group">
-       <input className="form-control form-control-lg" type="text" placeholder="Username" />
-     </fieldset>
-     <fieldset className="form-group">
-       <input className="form-control form-control-lg" type="text" placeholder="Email" />
-     </fieldset>
-     <fieldset className="form-group">
-       <input className="form-control form-control-lg" type="password" placeholder="Password" />
-     </fieldset>
-     <ButtonPrimary>Sign Up</ButtonPrimary>
-   </form>
- );
-};
+  const handleUpdateFormData: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    const name = evt.target.name as keyof UserRequestRegisterInterface['user']
+    const value = evt.target.value
+    const result = { ...formData.user, [name]: value }
+    setFormData({ user: result })
+  }
 
-export default RegisterForm;
+  const handeSubmitForm: FormEventHandler<HTMLFormElement> = (evt) => {
+    evt.preventDefault()
+    register(formData)
+  }
+
+  console.log(error)
+
+  return (
+    <>
+      {/*<BackendErrors backendErrors={error} />*/}
+      <form onSubmit={handeSubmitForm}>
+        <fieldset className='form-group'>
+          <input className='form-control form-control-lg' type='text' placeholder='Username' name='username'
+                 onChange={handleUpdateFormData} />
+        </fieldset>
+        <fieldset className='form-group'>
+          <input className='form-control form-control-lg' type='text' placeholder='Email' name='email'
+                 onChange={handleUpdateFormData} />
+        </fieldset>
+        <fieldset className='form-group'>
+          <input className='form-control form-control-lg' type='password' placeholder='Password' name='password'
+                 onChange={handleUpdateFormData} />
+        </fieldset>
+        <ButtonPrimary type='submit' disabled={isLoading}>Sign Up</ButtonPrimary>
+      </form>
+    </>
+  )
+}
+
+export default RegisterForm
