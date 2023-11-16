@@ -17,9 +17,6 @@ const Page: FC = () => {
            <p className="text-xs-center">
              <Link href="/sign-up">Need an account?</Link>
            </p>
-           <ul className="error-messages">
-             <li>That email is already taken</li>
-           </ul>
            <LoginForm />
          </div>
        </div>
