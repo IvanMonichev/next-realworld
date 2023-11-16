@@ -3,7 +3,8 @@ import config from '@/lib/config'
 import {
   UserInterface,
   UserRequestLoginInterface,
-  UserRequestRegisterInterface
+  UserRequestRegisterInterface,
+  UserResponseInterface
 } from '@/types/user.interface'
 
 export const userApi = createApi({
@@ -13,17 +14,20 @@ export const userApi = createApi({
     baseUrl: config.baseApi
   }),
   endpoints: builder => ({
-    getCurrentUser: builder.query<UserInterface, void>({
+    getCurrentUser: builder.query<UserResponseInterface, void>({
       query: () => `/user`
     }),
-    register: builder.mutation<UserInterface, UserRequestRegisterInterface>({
+    register: builder.mutation<
+      UserResponseInterface,
+      UserRequestRegisterInterface
+    >({
       query: data => ({
         url: '/users',
         method: 'POST',
         body: data
       })
     }),
-    login: builder.mutation<UserInterface, UserRequestLoginInterface>({
+    login: builder.mutation<UserResponseInterface, UserRequestLoginInterface>({
       query: data => ({
         url: '/users/login',
         method: 'POST',

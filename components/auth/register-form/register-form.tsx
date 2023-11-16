@@ -1,10 +1,14 @@
 'use client'
 import type { ChangeEventHandler, FC, FormEventHandler } from 'react'
+import { useState } from 'react'
 import ButtonPrimary from '@/components/ui/button-primary/button-primary'
 import { useRegisterMutation } from '@/store/api/user.api'
-import { useState } from 'react'
 import { UserRequestRegisterInterface } from '@/types/user.interface'
 import BackendErrors from '@/components/common/backend-errors/backend-errors'
+import { useAppDispatch } from '@/hooks/useAppDispatch'
+import { setCurrentUser, setIsLoggedIn } from '@/store/auth/auth.slice'
+import { StatusAuthorization } from '@/lib/constants'
+import { useRouter } from 'next/navigation'
 
 const initialFormData: UserRequestRegisterInterface = {
   user: {
@@ -17,6 +21,8 @@ const initialFormData: UserRequestRegisterInterface = {
 const RegisterForm: FC = () => {
   const [formData, setFormData] = useState<UserRequestRegisterInterface>(initialFormData)
   const [register, { isLoading, error }] = useRegisterMutation()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const handleUpdateFormData: ChangeEventHandler<HTMLInputElement> = (evt) => {
     const name = evt.target.name as keyof UserRequestRegisterInterface['user']
@@ -28,9 +34,12 @@ const RegisterForm: FC = () => {
   const handeSubmitForm: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault()
     try {
-      await register(formData).unwrap()
+      const result = await register(formData).unwrap()
+      dispatch(setCurrentUser(result))
+      dispatch(setIsLoggedIn(StatusAuthorization.Authorized))
+      router.push('/')
     } catch (err) {
-      console.error(err)
+      console.error('Register errors', err)
     }
   }
 

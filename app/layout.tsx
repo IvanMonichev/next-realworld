@@ -9,7 +9,6 @@ import { ReactNode } from 'react'
 import Header from '@/components/layouts/header/header'
 import CustomProvider from '@/components/common/custom-provider/custom-provider'
 
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -20,11 +19,11 @@ const RootLayout = ({ children }: {
   children: ReactNode
 }) => (
   <html lang='en'>
-  <body className={inter.className}>
-  <Header />
-  <main>
-    <CustomProvider>{children}</CustomProvider>
-  </main>
+  <body>
+    <Header />
+    <main>
+      <CustomProvider>{children}</CustomProvider>
+    </main>
   </body>
   </html>
 )
