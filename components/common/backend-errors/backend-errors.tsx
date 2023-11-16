@@ -1,9 +1,11 @@
 import type { FC } from 'react'
 import { useEffect, useState } from 'react'
 import { BackendErrorsInterface } from '@/types/backend-error.interface'
+import { SerializedError } from '@reduxjs/toolkit'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 type BackendErrorsProps = {
-  backendErrors: BackendErrorsInterface
+  backendErrors: any
 };
 
 const BackendErrors: FC<BackendErrorsProps> = ({ backendErrors }) => {

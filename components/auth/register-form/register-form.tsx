@@ -25,16 +25,18 @@ const RegisterForm: FC = () => {
     setFormData({ user: result })
   }
 
-  const handeSubmitForm: FormEventHandler<HTMLFormElement> = (evt) => {
+  const handeSubmitForm: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault()
-    register(formData)
+    try {
+      await register(formData).unwrap()
+    } catch (err) {
+      console.error(err)
+    }
   }
-
-  console.log(error)
 
   return (
     <>
-      {/*<BackendErrors backendErrors={error} />*/}
+      {error && <BackendErrors backendErrors={error} />}
       <form onSubmit={handeSubmitForm}>
         <fieldset className='form-group'>
           <input className='form-control form-control-lg' type='text' placeholder='Username' name='username'
